@@ -1,5 +1,5 @@
 ---
-title: "Next.js 15で WebAssemblyを使う"
+title: "Next.js 15でWebAssemblyを使う"
 emoji: "🦀"
 type: "tech"
 topics: ["rust", "nextjs", "frontend"]
@@ -139,14 +139,13 @@ export default function Add() {
 
 開発サーバーでの表示結果は以下の通りです。
 
-![表示結果](next14-wasm.1.png)
+![表示結果](/images/next14-rust-wasm/1.png)
 
 ### 5. Next.jsの設定
 
 ここまでは問題なく動作しますが、Productionビルドを行うと、以下のエラーが発生します。
 
-<details>
-<summary>エラー全文</summary>
+:::details エラー全文
 
 ```shell
 $ corepack pnpm run next build --no-lint
@@ -193,10 +192,54 @@ Import trace for requested module:
  ELIFECYCLE  Command failed with exit code 1.
 ```
 
-</details>
+:::
 
-Next.js が使用している webpack は、WebAssemblyを扱う場合、特殊な対処が必要なようです。
-ここでの対処はNext.jsのバージョンによって異なりますが、15.2.4では以下のように設定します。
+Next.js が使用している webpack で WebAssembly を扱う場合、特殊な対処が必要なようです。
+エラーの指示通りに `experiments.asyncWebAssembly` のみを有効化すると以下のエラーが発生します。
+
+:::details エラー全文
+
+```shell
+$ corepack pnpm run next build --no-lint
+
+> nextjs-wasm-test@0.1.0 next /home/ubuntu/nextjs-wasm-test
+> next build --no-lint
+
+ ⚠ Linting is disabled.
+   ▲ Next.js 15.2.4
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./wasm/pkg/wasm_bg.wasm
+The generated code contains 'async/await' because this module is using "asyncWebAssembly".
+However, your target environment does not appear to support 'async/await'.
+As a result, the code may not run as expected or may cause runtime errors.
+
+Import trace for requested module:
+./wasm/pkg/wasm_bg.wasm
+./wasm/pkg/wasm.js
+./src/components/Add.tsx
+
+ ✓ Checking validity of types    
+   Collecting page data  ...[Error: Failed to collect configuration for /] {
+  [cause]: [Error: ENOENT: no such file or directory, open '/home/ubuntu/nextjs-wasm-test/.next/server/static/wasm/ffe94b3915243d96.wasm'] {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/home/ubuntu/nextjs-wasm-test/.next/server/static/wasm/ffe94b3915243d96.wasm'
+  }
+}
+
+> Build error occurred
+[Error: Failed to collect page data for /] { type: 'Error' }
+ ELIFECYCLE  Command failed with exit code 1.
+```
+
+:::
+
+Next.js が WebAssembly ファイルのパスを正しく処理できないため、手動でシンボリックリンクを作成する必要があります。
+そのため、`next.config.ts` に以下のような設定を追加します。
 
 ```ts
 // next.config.ts
@@ -251,52 +294,6 @@ const nextConfig = {
 export default nextConfig
 ```
 
-エラーの指示通りに `experiments.asyncWebAssembly` のみを有効化すると以下のエラーが発生します。
-
-<details>
-<summary>エラー全文</summary>
-
-```shell
-$ corepack pnpm run next build --no-lint
-
-> nextjs-wasm-test@0.1.0 next /home/ubuntu/nextjs-wasm-test
-> next build --no-lint
-
- ⚠ Linting is disabled.
-   ▲ Next.js 15.2.4
-
-   Creating an optimized production build ...
- ⚠ Compiled with warnings
-
-./wasm/pkg/wasm_bg.wasm
-The generated code contains 'async/await' because this module is using "asyncWebAssembly".
-However, your target environment does not appear to support 'async/await'.
-As a result, the code may not run as expected or may cause runtime errors.
-
-Import trace for requested module:
-./wasm/pkg/wasm_bg.wasm
-./wasm/pkg/wasm.js
-./src/components/Add.tsx
-
- ✓ Checking validity of types    
-   Collecting page data  ...[Error: Failed to collect configuration for /] {
-  [cause]: [Error: ENOENT: no such file or directory, open '/home/ubuntu/nextjs-wasm-test/.next/server/static/wasm/ffe94b3915243d96.wasm'] {
-    errno: -2,
-    code: 'ENOENT',
-    syscall: 'open',
-    path: '/home/ubuntu/nextjs-wasm-test/.next/server/static/wasm/ffe94b3915243d96.wasm'
-  }
-}
-
-> Build error occurred
-[Error: Failed to collect page data for /] { type: 'Error' }
- ELIFECYCLE  Command failed with exit code 1.
-```
-
-</details>
-
-Next.js が WebAssembly ファイルのパスを正しく処理できないため、手動でシンボリックリンクを作成する必要があります。
-
 ### 6. Productionビルド・実行
 
 ```shell
@@ -316,6 +313,8 @@ Next.js 15でWebAssemblyを使用する場合、変なバグを回避するた�
 
 ## 参考
 
-- <https://bkbkb.net/ja/articles/nextjs-wasm>
-- vercel/next.js#34763
-- vercel/next.js#72036
+https://bkbkb.net/ja/articles/nextjs-wasm
+
+https://github.com/vercel/next.js/issues/34763
+
+https://github.com/vercel/next.js/issues/72036
