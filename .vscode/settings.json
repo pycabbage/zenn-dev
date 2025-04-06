@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-issue-forms.json": "file:///home/ubuntu/zenn-dev/.github/PULL_REQUEST_TEMPLATE/new-article.yml"
+  }
+}
