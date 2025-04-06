@@ -3,7 +3,7 @@ title: "Next.js 15でWebAssemblyを使う"
 emoji: "🦀"
 type: "tech"
 topics: ["rust", "nextjs", "frontend"]
-published: false
+published: true
 ---
 
 
