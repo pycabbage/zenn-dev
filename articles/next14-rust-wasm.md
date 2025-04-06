@@ -55,6 +55,7 @@ wasm-pack build wasm -s nextjs-wasm-test
 ```
 
 今回は依存関係を追加する方法として [pnpm Workspaces](https://pnpm.io/ja/workspaces) を使用します。
+npm ( [npm workspaces](https://docs.npmjs.com/cli/v11/using-npm/workspaces) ) や yarn ( [yarn workspaces](https://yarnpkg.com/features/workspaces) ) でも代替できます。
 
 ```yaml
 # pnpm-workspace.yaml
