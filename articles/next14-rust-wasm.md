@@ -10,6 +10,9 @@ published: false
 ## はじめに
 
 Next.jsでWebAssemblyを使う方法についての記事はいくつかありますが、Next.js 15では使えない方法が多かったため、メモとして残します。
+今回の記事で書いたコードは以下のリポジトリで公開しています。
+
+https://github.com/pycabbage/nextjs-wasm-test/
 
 ## 使用したライブラリ/フレームワークのバージョン
 
@@ -260,8 +263,8 @@ const nextConfig = {
 
     // define plugin
     class SymlinkWebpackPlugin implements WebpackPluginInstance {
-      apply(compiler: Compiler) {
-        compiler.hooks.afterEmit.tapPromise(
+      apply(comp: Compiler) {
+        comp.hooks.afterEmit.tapPromise(
           "SymlinkWebpackPlugin",
           async (compiler) => {
             if (isServer) {
