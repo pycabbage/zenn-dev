@@ -29,4 +29,13 @@ git read-tree --reset -u origin/develop
 
 # 4. コミットメッセージを指定せずコミット
 git commit --no-edit
+
+# 5. 検証
+#   HEADとorigin/developの差分を確認
+git diff HEAD origin/develop
+#   何も出力されなければ成功
+#   もしくは、ツリーオブジェクトのハッシュを比較
+git rev-parse HEAD^{tree}
+git rev-parse origin/develop^{tree}
+#   2つのハッシュが同じなら完全に同じ状態
 ```
