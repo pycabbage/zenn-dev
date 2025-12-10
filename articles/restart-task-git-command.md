@@ -1,6 +1,6 @@
 ---
 title: "コミット履歴を保ちつつ、作業をやり直す"
-emoji: "🦀"
+emoji: "📦"
 type: "tech"
 topics: ["git"]
 published: false
@@ -39,3 +39,6 @@ git rev-parse HEAD^{tree}
 git rev-parse origin/develop^{tree}
 #   2つのハッシュが同じなら完全に同じ状態
 ```
+
+このコマンドにより、「トピックブランチの試行錯誤を記録として残しつつ、クリーンな状態にリセットする」というニーズを満たすことができます。
+
