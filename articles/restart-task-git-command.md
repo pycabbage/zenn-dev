@@ -3,7 +3,7 @@ title: "コミット履歴を保ちつつ、作業をやり直す"
 emoji: "📦"
 type: "tech"
 topics: ["git"]
-published: false
+published: true
 ---
 
 ## やりたいこと
